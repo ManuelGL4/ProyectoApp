@@ -160,7 +160,123 @@ Future<bool> delete(int rowid) async {
   }
 }
 
+  Future<List<Map<String, dynamic>>> getUsuarios() async {
+    SharedPreferences preferences = await SharedPreferences.getInstance();
+    String? token = preferences.getString('token');
 
+    Map<String, String> header = {
+      'DOLAPIKEY': token ?? '',
+      'Content-Type': 'application/json',
+    };
 
+    List<Map<String, dynamic>> usuarios = [];
+
+    try {
+      String url = '${apiUrl}recursoshumanosapi/listarUsuarios'; 
+
+      final response = await http.get(Uri.parse(url), headers: header).timeout(const Duration(seconds: 30));
+
+      String body = utf8.decode(response.bodyBytes);
+      final jsonData = jsonDecode(body);
+
+      if (response.statusCode == 200 && jsonData is List) {
+        for (var userData in jsonData) {
+          usuarios.add({
+            'rowid': userData['rowid'],
+            'nombre': userData['nombre'], 
+          });
+        }
+      } else {
+        print("No usuarios found or error in response");
+      }
+    } on TimeoutException {
+      print("Timeout reached");
+    } on Error catch (e) {
+      print("Error: $e");
+    }
+
+    return usuarios;
+  }
+
+Future<Map<String, dynamic>> solicitarPermiso(
+  String fechaInicio,
+  String fechaFin,
+  String descripcion,
+  String validadorId,
+) async {
+  // Obtener el token y userId de SharedPreferences
+  SharedPreferences preferences = await SharedPreferences.getInstance();
+  String? token = preferences.getString('token');
+  String userId = preferences.getString('userId') ?? '';
+
+  // Definir los encabezados de la solicitud
+  Map<String, String> header = {
+    'DOLAPIKEY': token ?? '',
+    'Content-Type': 'application/json',
+  };
+
+  // URL para crear el nuevo permiso
+  String url = '${apiUrl}recursoshumanosapi/permisos';
+
+  String padHora(String fecha) {
+    // Añadir un cero delante de minutos si es necesario
+    return fecha.replaceAllMapped(
+      RegExp(r'(\d{4}-\d{2}-\d{2} \d{1,2}):(\d{1,2})'),
+      (match) => '${match[1]}:${match[2]?.padLeft(2, '0')}',
+    );
+  }
+
+  // Al crear el cuerpo de la solicitud
+  Map<String, dynamic> body = {
+    'date_solic': padHora(fechaInicio),
+    'date_solic_fin': padHora(fechaFin),
+    'motivos': descripcion,
+    'fk_user_solicitado': userId,
+    'fk_user_validador': validadorId,
+    'status': 0,
+    'usuario': userId,
+  };
+
+  // Log de la solicitud
+  print('Enviando solicitud a $url');
+  print('Headers: $header');
+  print('Body: $body');
+
+  try {
+    // Realizar la solicitud POST
+    final response = await http
+        .post(Uri.parse(url), headers: header, body: jsonEncode(body))
+        .timeout(const Duration(seconds: 30));
+
+    // Log de la respuesta
+    print('Código de estado: ${response.statusCode}');
+    print('Respuesta completa: ${response.body}');
+
+    // Decodificar la respuesta
+    String responseBody = utf8.decode(response.bodyBytes);
+    final jsonData = jsonDecode(responseBody);
+
+    if (response.statusCode == 200 && jsonData is Map) {
+      print('Día de permiso solicitado con éxito');
+      return {'success': true, 'message': 'Día de permiso solicitado con éxito'};
+    } else {
+      // Manejar error en la respuesta
+      print("Error al solicitar el permiso: ${jsonData['message']}");
+      return {
+        'success': false,
+        'message': jsonData['message'] ?? 'Error desconocido',
+        'status': response.statusCode,
+        'response': jsonData,
+      };
+    }
+  } on TimeoutException {
+    print("Timeout reached");
+    return {'success': false, 'message': 'Tiempo de espera agotado'};
+  } catch (e) {
+    // Log de cualquier error inesperado
+    print("Error inesperado: $e");
+    return {'success': false, 'message': 'Error inesperado: $e'};
+  }
+}
 
 }

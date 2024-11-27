@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:fichajes/model/dia_permiso.dart';
 import 'package:fichajes/controller/dias_permiso_controller.dart';
 import 'package:intl/intl.dart';
+import 'package:fichajes/view/nuevo_dia.dart';
 
 class DiasPermisoDetailScreen extends StatefulWidget {
   final DiasPermiso permiso;
@@ -375,7 +376,7 @@ Future<void> _deletePermiso(int rowid) async {
     });
   }
 }
-  @override
+@override
 Widget build(BuildContext context) {
   return Scaffold(
     appBar: AppBar(
@@ -395,21 +396,21 @@ Widget build(BuildContext context) {
                       return Card(
                         margin: EdgeInsets.symmetric(vertical: 5),
                         child: ListTile(
-                          title: Text('${permiso.username} - ${permiso.label ?? ''}',),
+                          title: Text('${permiso.username} - ${permiso.label ?? ''}'),
                           subtitle: Text('Desde: ${permiso.dateSolic ?? ''} \nHasta: ${permiso.dateSolicFin ?? ''}'),
                           trailing: Row(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                Text(
-                                  _getStatusText(permiso.status ?? '0'),
-                                  style: TextStyle(color: _getStatusColor(permiso.status ?? '0')),
-                                ),
-                                IconButton(
-                                  icon: Icon(Icons.delete),
-                                  onPressed: () => _confirmDelete(context, int.parse(permiso.rowid)),
-                                ),
-                              ],
-                            ),
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Text(
+                                _getStatusText(permiso.status ?? '0'),
+                                style: TextStyle(color: _getStatusColor(permiso.status ?? '0')),
+                              ),
+                              IconButton(
+                                icon: Icon(Icons.delete),
+                                onPressed: () => _confirmDelete(context, int.parse(permiso.rowid)),
+                              ),
+                            ],
+                          ),
                           onTap: () async {
                             // Navegar al detalle del permiso
                             final updatedPermiso = await Navigator.push(
@@ -447,10 +448,34 @@ Widget build(BuildContext context) {
               ),
             ],
           ),
+          SizedBox(height: 16),  // Espacio entre la lista y el botón
+          ElevatedButton(
+            onPressed: () async {
+                // Navegar a la pantalla para solicitar un nuevo permiso
+                final nuevoDiaCreado = await Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => SolicitarNuevoDiaScreen(), // Pantalla para solicitar nuevo día
+                  ),
+                );
+
+                // Si se creó un nuevo día (recibes true), recargar la lista
+                if (nuevoDiaCreado == true) {
+                  setState(() {
+                    _loadPermisos(); // Método para recargar la lista
+                  });
+                }
+              },
+            child: Text('Solicitar Nuevo Día de Permiso'),
+            style: ElevatedButton.styleFrom(
+              minimumSize: Size(double.infinity, 50), // Hace el botón más grande
+            ),
+          ),
         ],
       ),
     ),
   );
 }
+
 
 }

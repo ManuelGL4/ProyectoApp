@@ -15,23 +15,12 @@ class DiasPermiso {
   String motivos = ""; // varchar.
   bool isAdmin = false; 
   String username="";
+  
   DiasPermisoController diasPermisoController = DiasPermisoController();
 
   DiasPermiso.simple(this.rowid);
   DiasPermiso();
 
-/*
-  // Método para crear un nuevo permiso
-  Future<DiasPermiso> createDiasPermiso() async {
-    return diasPermisoController.createDiasPermiso(this);
-  }
-
-
-
-  // Método para eliminar un permiso
-  Future<List<DiasPermiso>> delete(String token) async {
-    return diasPermisoController.delete(token);
-  }*/
 
   // Método para obtener todos los permisos
   Future<List<DiasPermiso>> getAllDiasPermisos() async {

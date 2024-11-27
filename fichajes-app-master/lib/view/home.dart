@@ -137,11 +137,11 @@ class _HomeState extends State<Home> {
                 ListTile(
                   leading: Icon(status),
                   title: Text(
-                    task.companyName,
+                    task.projectTitle,
                     style: const TextStyle(fontSize: 16),
                   ),
                   subtitle: Text(
-                    task.projectTitle,
+                    task.companyName,
                     style: const TextStyle(fontSize: 15),
                   ),
                 ),
