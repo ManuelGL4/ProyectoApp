@@ -65,14 +65,13 @@ List<Widget> _drawerElements(context) {
         separator(),
         GestureDetector(
           onTap: () {
-            // Acción para Fichajes
           },
           child: Padding(
             padding: const EdgeInsets.fromLTRB(20, 20, 10, 20),
             child: Row(
               children: const [
                 Icon(
-                  Icons.access_time, // Puedes cambiar este icono si lo prefieres
+                  Icons.access_time, // Icono de reloj
                   size: 25.0,
                   color: Colors.blue,
                 ),
@@ -90,10 +89,8 @@ List<Widget> _drawerElements(context) {
             ),
           ),
         ),
-        // Aquí agregamos la opción de "Edición/Listado de registros" como un elemento simple
         GestureDetector(
   onTap: () {
-    // Redirige a la pantalla de Listado/Edición de registros
     Navigator.push(
       context,
       MaterialPageRoute(builder: (context) => EventListScreen()), // Redirige a EventListScreen
@@ -231,7 +228,7 @@ Widget separator() {
 AppBar appBarSimple(titulo) {
   return AppBar(
     iconTheme: const IconThemeData(
-      color: Colors.blue, //change your color here
+      color: Colors.blue, 
     ),
     title: Row(
       mainAxisAlignment: MainAxisAlignment.end,

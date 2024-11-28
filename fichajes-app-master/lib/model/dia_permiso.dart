@@ -4,15 +4,15 @@ class DiasPermiso {
   String rowid = ""; 
   String label = ""; 
   String dateCreation = ""; 
-  String fkUserCreat = ""; // int.
-  String? fkUserModif; // int, opcional.
-  String? lastMainDoc = ""; // varchar, opcional.
-  String status = ""; // smallint.
-  String fkUserSolicitado = ""; // int.
-  String dateSolic = ""; // datetime, se mantiene como String para compatibilidad.
-  String dateSolicFin = ""; // datetime, se mantiene como String para compatibilidad.
-  String fkUserValidador=""; // int, opcional.
-  String motivos = ""; // varchar.
+  String fkUserCreat = ""; 
+  String? fkUserModif;
+  String? lastMainDoc = ""; 
+  String status = ""; 
+  String fkUserSolicitado = ""; 
+  String dateSolic = ""; 
+  String dateSolicFin = ""; 
+  String fkUserValidador=""; 
+  String motivos = ""; 
   bool isAdmin = false; 
   String username="";
   
@@ -22,11 +22,10 @@ class DiasPermiso {
   DiasPermiso();
 
 
-  // Método para obtener todos los permisos
   Future<List<DiasPermiso>> getAllDiasPermisos() async {
     return diasPermisoController.getAllDiasPermisos();
   }
-  // Método para actualizar un permiso existente
+
   Future<DiasPermiso> updateDiasPermiso(DiasPermiso permiso) async {
     return diasPermisoController.updateDiasPermiso(permiso);
   }

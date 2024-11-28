@@ -1,4 +1,4 @@
-import 'dart:async'; // Necesario para el uso de Timer
+import 'dart:async'; 
 import 'package:fichajes/view/single_task.dart';
 import 'package:flutter/material.dart';
 import '../model/event.dart';
@@ -17,15 +17,15 @@ class Home extends StatefulWidget {
 class _HomeState extends State<Home> {
   final _scaffoldkey = GlobalKey<ScaffoldState>();
   late Timer _timer;
-  late Event _lastEvent=Event(); // Usamos un State para el último evento
-  bool _isLoading = true; // Variable para controlar el estado de carga
+  late Event _lastEvent=Event(); 
+  bool _isLoading = true; 
 
   @override
   void initState() {
     super.initState();
-    // Inicia el Timer para actualizar el evento cada 10 segundos (10,000 milisegundos)
+    // Inicia el Timer para actualizar el evento cada 10 segundos 
     _timer = Timer.periodic(Duration(seconds: 5), (Timer t) {
-      _fetchLastEvent(); // Llama a la función para obtener el último evento
+      _fetchLastEvent(); //función para obtener el último evento
     });
 
     // Carga inicial del último evento
@@ -38,18 +38,17 @@ class _HomeState extends State<Home> {
     super.dispose();
   }
 
-  // Método para obtener el último evento y actualizar el estado
+  //ultimo evento y actualizar el estado
   void _fetchLastEvent() async {
     try {
       Event event = await widget._event.getLastEvent();
       if (mounted) {
         setState(() {
           _lastEvent = event;
-          _isLoading = false; // Deja de mostrar el cargando
+          _isLoading = false; 
         });
       }
     } catch (e) {
-      // Manejo de error si falla al obtener el evento
       setState(() {
         _isLoading = false;
       });
@@ -81,7 +80,6 @@ class _HomeState extends State<Home> {
                       height: 15,
                     ),
                     _taskListSection(snapshot.data),
-                    // Aquí ya no estamos dependiendo de _lastEvent en el FutureBuilder
                   ],
                 ),
               );

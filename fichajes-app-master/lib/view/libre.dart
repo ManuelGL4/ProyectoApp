@@ -21,7 +21,7 @@ class _DiasPermisoDetailScreenState extends State<DiasPermisoDetailScreen> {
   final TextEditingController _labelController = TextEditingController();
   String? _selectedUsuario;
   String? _selectedEstado;
-  bool _showMotivosField = false;  // Nueva variable para controlar la visibilidad de motivos
+  bool _showMotivosField = false; 
 
   @override
   void initState() {
@@ -32,7 +32,7 @@ class _DiasPermisoDetailScreenState extends State<DiasPermisoDetailScreen> {
     _selectedEstado = widget.permiso.status;
     _dateSolicController.text = widget.permiso.dateSolic ?? '';
     _dateSolicFinController.text = widget.permiso.dateSolicFin ?? '';
-    _showMotivosField = _selectedEstado == '1' || _selectedEstado == '9'; // Controlar la visibilidad al iniciar
+    _showMotivosField = _selectedEstado == '1' || _selectedEstado == '9';
   }
 Future<void> _selectDateTime(TextEditingController controller) async {
     DateTime initialDate = DateTime.now();
@@ -99,7 +99,7 @@ Future<void> _selectDateTime(TextEditingController controller) async {
   }
 
 void _saveChanges() async {
-    final DiasPermisoController _controller = DiasPermisoController(); // Initialize the controller
+    final DiasPermisoController _controller = DiasPermisoController(); 
 
   // Actualizar los datos del permiso
   widget.permiso.label = _labelController.text;
@@ -109,7 +109,7 @@ void _saveChanges() async {
   widget.permiso.dateSolic = _dateSolicController.text;
   widget.permiso.dateSolicFin = _dateSolicFinController.text;
     print('Guardando cambios con los siguientes valores:');
-  print('Row ID: ${widget.permiso.rowid}');  // Imprimir el rowid
+  print('Row ID: ${widget.permiso.rowid}');  
   print('Label: ${widget.permiso.label}');
   print('Motivos: ${widget.permiso.motivos}');
   print('Usuario Solicitante: ${widget.permiso.fkUserSolicitado}');
@@ -122,18 +122,16 @@ void _saveChanges() async {
     // Llamar al controlador para actualizar el permiso
     await _controller.updateDiasPermiso(widget.permiso);
     
-    // Mostrar un mensaje de éxito
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(content: Text('Cambios guardados exitosamente.')),
     );
 
-    // Regresar a la pantalla anterior
     Navigator.pop(context, widget.permiso);
 
   } catch (e) {
-    // Manejar los errores que puedan surgir al intentar guardar los cambios
+
     ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text('Error al guardar los cambios. Intenta nuevamente.')),
+      SnackBar(content: Text('Error al guardar los cambios. Intentalo de nuevo.')),
     );
   }
 }
@@ -191,7 +189,7 @@ void _saveChanges() async {
                 border: OutlineInputBorder(),
               ),
               onTap: () async {
-                await _selectDateTime(_dateSolicFinController); // Llamar al nuevo selector
+                await _selectDateTime(_dateSolicFinController); 
               },
             ),
             SizedBox(height: 16),
@@ -216,7 +214,6 @@ void _saveChanges() async {
                   ],
                 ),
               ),
-            // Mostrar el campo de motivos si el estado es "Aprobada" o "Rechazada"
             if (_showMotivosField)
               TextField(
                 controller: _motivosController,
@@ -329,7 +326,7 @@ class _DiasPermisoListState extends State<DiasPermisoList> {
             child: Text("Eliminar"),
             onPressed: () async {
               Navigator.pop(context); // Cerrar el modal
-              await _deletePermiso(rowid ); // Llamar al método de eliminación
+              await _deletePermiso(rowid ); 
             },
           ),
         ],
@@ -341,14 +338,13 @@ class _DiasPermisoListState extends State<DiasPermisoList> {
 Future<void> _deletePermiso(int rowid) async {
     try {
     setState(() {
-      _isLoading = true; // Indicar que la operación está en curso
+      _isLoading = true; 
     });
     
-    // Mostrar tipo de rowid
     print(rowid.runtimeType);
     print(rowid);
 
-    // Llamar al método de eliminación
+    //método de eliminación
     bool success = await _controller.delete(rowid);
 
     if (success) {
@@ -357,10 +353,8 @@ Future<void> _deletePermiso(int rowid) async {
         SnackBar(content: Text('Permiso eliminado correctamente.')),
       );
 
-      // Recargar la lista de permisos
-      await _loadPermisos(); // Método para cargar la lista
+      await _loadPermisos(); 
     } else {
-      // Mostrar notificación de error
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Error al eliminar el permiso.')),
       );
@@ -372,7 +366,7 @@ Future<void> _deletePermiso(int rowid) async {
     );
   } finally {
     setState(() {
-      _isLoading = false; // Finalizar la operación
+      _isLoading = false; 
     });
   }
 }
@@ -412,7 +406,6 @@ Widget build(BuildContext context) {
                             ],
                           ),
                           onTap: () async {
-                            // Navegar al detalle del permiso
                             final updatedPermiso = await Navigator.push(
                               context,
                               MaterialPageRoute(
@@ -420,7 +413,7 @@ Widget build(BuildContext context) {
                               ),
                             );
                             if (updatedPermiso != null) {
-                              // Actualizar el permiso en la lista si se han hecho cambios
+                              // Actualizar el permiso en la lista
                               setState(() {
                                 int index = _diasPermisoList.indexWhere((p) => p.rowid == updatedPermiso.rowid);
                                 if (index != -1) {
@@ -448,10 +441,9 @@ Widget build(BuildContext context) {
               ),
             ],
           ),
-          SizedBox(height: 16),  // Espacio entre la lista y el botón
+          SizedBox(height: 16),  
           ElevatedButton(
             onPressed: () async {
-                // Navegar a la pantalla para solicitar un nuevo permiso
                 final nuevoDiaCreado = await Navigator.push(
                   context,
                   MaterialPageRoute(
@@ -459,10 +451,10 @@ Widget build(BuildContext context) {
                   ),
                 );
 
-                // Si se creó un nuevo día (recibes true), recargar la lista
+                // se creó un nuevo día, recargar la lista
                 if (nuevoDiaCreado == true) {
                   setState(() {
-                    _loadPermisos(); // Método para recargar la lista
+                    _loadPermisos(); 
                   });
                 }
               },

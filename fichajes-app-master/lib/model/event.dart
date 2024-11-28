@@ -17,7 +17,7 @@ class Event {
   String dateTimeEvent="";
   String userRef="";
   String taskRef="";
-  int userId = 0; // Agregar el ID del usuario como propiedad.
+  int userId = 0; 
 
   EventController eventController=EventController();
 

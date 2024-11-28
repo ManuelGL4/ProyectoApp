@@ -71,7 +71,7 @@ class _EventListScreenState extends State<EventListScreen> {
             backgroundColor: Colors.green,
           ),
         );
-        _fetchEvents(); // Recargar la lista de eventos después de la eliminación
+        _fetchEvents(); // Recargar la lista después de la eliminación
       } else {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
@@ -92,16 +92,14 @@ class _EventListScreenState extends State<EventListScreen> {
   }
 
   void _showEditEventModal(Event event) {
-    // Verificar que el evento tiene un id antes de proceder
     if (event.id == null) {
       print("Error: el evento no tiene un ID válido");
       return;
     }
 
-    // Configurar los controladores con los valores actuales
-    _hourController.text = event.dateTimeEvent;  // Asegúrate de que `event.dateTimeEvent` sea un String o DateTime adecuado
+    _hourController.text = event.dateTimeEvent;  
     _noteController.text = event.note;
-    _idController.text = event.id!; // Asignar el id al controlador
+    _idController.text = event.id!;
 
     // Mostrar el modal para editar el evento
     showDialog(
@@ -117,7 +115,7 @@ class _EventListScreenState extends State<EventListScreen> {
                 TextField(
                   controller: _idController,
                   decoration: InputDecoration(hintText: "ID del evento"),
-                  readOnly: true, // El campo ID no se puede editar
+                  readOnly: true, // no se puede editar
                 ),
                 SizedBox(height: 8),
                 Text("Fecha del Evento"),
@@ -149,7 +147,7 @@ class _EventListScreenState extends State<EventListScreen> {
                           selectedTime.hour,
                           selectedTime.minute,
                         );
-                        // Convertir la fecha combinada a formato ISO 8601
+                        // Convertir la fecha combinada 
                         _hourController.text = selectedDateTime.toIso8601String();
                       }
                     }
@@ -168,17 +166,15 @@ class _EventListScreenState extends State<EventListScreen> {
             TextButton(
               child: Text("Cancelar"),
               onPressed: () {
-                Navigator.of(context).pop(); // Cierra el diálogo sin hacer nada
+                Navigator.of(context).pop(); 
               },
             ),
             TextButton(
               child: Text("Guardar"),
               onPressed: () {
-                // Guardar los cambios
                 String updatedHour = _hourController.text;
                 String updatedNote = _noteController.text;
 
-                // Llamar al controlador para actualizar el evento
                 event.dateTimeEvent = updatedHour;
                 event.note = updatedNote;
                 print(updatedHour);
@@ -199,7 +195,7 @@ class _EventListScreenState extends State<EventListScreen> {
                       backgroundColor: Colors.green,
                     ),
                   );
-                  _fetchEvents(); // Recargar la lista de eventos después de la actualización
+                  _fetchEvents(); // Recargar la lista de eventos después de actualizar el registro
                 }).catchError((error) {
                   print("Error actualizando el evento: $error");
                   ScaffoldMessenger.of(context).showSnackBar(
@@ -217,7 +213,6 @@ class _EventListScreenState extends State<EventListScreen> {
     );
   }
 
-  // Método para mostrar el diálogo de confirmación
   void _showDeleteConfirmationDialog(String token) {
     showDialog(
       context: context,
@@ -229,14 +224,14 @@ class _EventListScreenState extends State<EventListScreen> {
             TextButton(
               child: Text("Cancelar"),
               onPressed: () {
-                Navigator.of(context).pop(); // Cierra el diálogo sin hacer nada
+                Navigator.of(context).pop();
               },
             ),
             TextButton(
               child: Text("Aceptar"),
               onPressed: () {
-                Navigator.of(context).pop(); // Cierra el diálogo
-                _deleteEvent(token); // Llamar al método para eliminar el evento
+                Navigator.of(context).pop(); // Cierra el modal
+                _deleteEvent(token); //método para eliminar el evento
               },
             ),
           ],

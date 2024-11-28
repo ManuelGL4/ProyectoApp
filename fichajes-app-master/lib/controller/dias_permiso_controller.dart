@@ -56,23 +56,20 @@ class DiasPermisoController {
 
     return permisos;
   }
-// Método para actualizar un permiso existente
+
 Future<DiasPermiso> updateDiasPermiso(DiasPermiso permiso) async {
   // Obtener el token y userId de SharedPreferences
   SharedPreferences preferences = await SharedPreferences.getInstance();
   String? token = preferences.getString('token');
   String userId = preferences.getString('userId') ?? '';
 
-  // Definir los encabezados de la solicitud
   Map<String, String> header = {
     'DOLAPIKEY': token ?? '',
     'Content-Type': 'application/json',
   };
 
-  // URL para la actualización del permiso
   String url = '${apiUrl}recursoshumanosapi/diapermiso';
 
-  // Crear el cuerpo de la solicitud con los valores de `permiso`
   Map<String, dynamic> body = {
     'rowid': permiso.rowid,
     'label': permiso.label,
@@ -83,19 +80,17 @@ Future<DiasPermiso> updateDiasPermiso(DiasPermiso permiso) async {
     'status': permiso.status,
     'fk_user_creat': permiso.fkUserCreat,
     'is_admin': permiso.isAdmin,
-    'user_id': userId,  // Incluir el ID de usuario si es necesario para la autenticación
+    'user_id': userId,
   };
 
   try {
     // Realizar la solicitud POST
     final response = await http.put(Uri.parse(url), headers: header, body: jsonEncode(body)).timeout(const Duration(seconds: 30));
 
-    // Decodificar la respuesta
     String responseBody = utf8.decode(response.bodyBytes);
     final jsonData = jsonDecode(responseBody);
 
     if (response.statusCode == 200 && jsonData is Map) {
-      // Crear un nuevo objeto `DiasPermiso` con los datos actualizados
       DiasPermiso updatedPermiso = DiasPermiso();
       updatedPermiso.rowid = jsonData['rowid'];
       updatedPermiso.label = jsonData['label'];
@@ -117,39 +112,33 @@ Future<DiasPermiso> updateDiasPermiso(DiasPermiso permiso) async {
     print("Error: $e");
   }
 
-  // Si algo falla, devolvemos un objeto vacío
   return DiasPermiso();
 }
 
 
 Future<bool> delete(int rowid) async {
-  // Obtener el token y userId de SharedPreferences
   SharedPreferences preferences = await SharedPreferences.getInstance();
   String? token = preferences.getString('token');
   
-  // Definir los encabezados de la solicitud
   Map<String, String> header = {
     'DOLAPIKEY': token ?? '',
     'Content-Type': 'application/json',
   };
   
-  // URL para la eliminación del permiso
   String url = '${apiUrl}recursoshumanosapi/diapermiso/$rowid';
   
   try {
-    // Realizar la solicitud DELETE
     final response = await http.delete(Uri.parse(url), headers: header).timeout(const Duration(seconds: 30));
     
-    // Decodificar la respuesta
     String responseBody = utf8.decode(response.bodyBytes);
     final jsonData = jsonDecode(responseBody);
     
     if (response.statusCode == 200 && jsonData['message'] == 'Permiso eliminado correctamente') {
-      print(jsonData['message']); // Log del mensaje de éxito
-      return true; // Indicar que la eliminación fue exitosa
+      print(jsonData['message']);
+      return true; 
     } else {
       print("Error en la respuesta: ${response.statusCode}");
-      return false; // Indicar que hubo un error
+      return false;
     }
   } on TimeoutException {
     print("Timeout alcanzado");
@@ -209,13 +198,11 @@ Future<Map<String, dynamic>> solicitarPermiso(
   String? token = preferences.getString('token');
   String userId = preferences.getString('userId') ?? '';
 
-  // Definir los encabezados de la solicitud
   Map<String, String> header = {
     'DOLAPIKEY': token ?? '',
     'Content-Type': 'application/json',
   };
 
-  // URL para crear el nuevo permiso
   String url = '${apiUrl}recursoshumanosapi/permisos';
 
   String padHora(String fecha) {
@@ -226,7 +213,6 @@ Future<Map<String, dynamic>> solicitarPermiso(
     );
   }
 
-  // Al crear el cuerpo de la solicitud
   Map<String, dynamic> body = {
     'date_solic': padHora(fechaInicio),
     'date_solic_fin': padHora(fechaFin),
@@ -237,22 +223,18 @@ Future<Map<String, dynamic>> solicitarPermiso(
     'usuario': userId,
   };
 
-  // Log de la solicitud
   print('Enviando solicitud a $url');
   print('Headers: $header');
   print('Body: $body');
 
   try {
-    // Realizar la solicitud POST
     final response = await http
         .post(Uri.parse(url), headers: header, body: jsonEncode(body))
         .timeout(const Duration(seconds: 30));
 
-    // Log de la respuesta
     print('Código de estado: ${response.statusCode}');
     print('Respuesta completa: ${response.body}');
 
-    // Decodificar la respuesta
     String responseBody = utf8.decode(response.bodyBytes);
     final jsonData = jsonDecode(responseBody);
 
@@ -260,7 +242,6 @@ Future<Map<String, dynamic>> solicitarPermiso(
       print('Día de permiso solicitado con éxito');
       return {'success': true, 'message': 'Día de permiso solicitado con éxito'};
     } else {
-      // Manejar error en la respuesta
       print("Error al solicitar el permiso: ${jsonData['message']}");
       return {
         'success': false,
@@ -273,7 +254,6 @@ Future<Map<String, dynamic>> solicitarPermiso(
     print("Timeout reached");
     return {'success': false, 'message': 'Tiempo de espera agotado'};
   } catch (e) {
-    // Log de cualquier error inesperado
     print("Error inesperado: $e");
     return {'success': false, 'message': 'Error inesperado: $e'};
   }

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:fichajes/controller/dias_permiso_controller.dart'; // Asegúrate de importar el controlador
+import 'package:fichajes/controller/dias_permiso_controller.dart';
 
 class SolicitarNuevoDiaScreen extends StatefulWidget {
   @override
@@ -170,43 +170,61 @@ class _SolicitarNuevoDiaScreenState extends State<SolicitarNuevoDiaScreen> {
 
 void _submitForm() async {
   if (_formKey.currentState?.validate() ?? false) {
+    // Validar que las fechas sean válidas
+    DateTime? fechaInicio = DateTime.tryParse(_fechaInicioController.text);
+    DateTime? fechaFin = DateTime.tryParse(_fechaFinController.text);
+
+    if (fechaInicio == null || fechaFin == null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Las fechas ingresadas no son válidas')),
+      );
+      return;
+    }
+
+    if (fechaInicio.isAfter(fechaFin)) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('La fecha de inicio debe ser anterior a la fecha de fin')),
+      );
+      return;
+    }
+
+    if (_selectedValidadorId == null || _descripcionController.text.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Por favor complete todos los campos')),
+      );
+      return;
+    }
+
     setState(() {
       _isSubmitting = true;
     });
 
-    // Recoger los datos del formulario
-    String fechaInicio = _fechaInicioController.text;
-    String fechaFin = _fechaFinController.text;
+    String fechaInicioStr = _fechaInicioController.text;
+    String fechaFinStr = _fechaFinController.text;
     String descripcion = _descripcionController.text;
     String validadorId = _selectedValidadorId ?? '';
 
-    // Crear una instancia del controlador
     DiasPermisoController controller = DiasPermisoController();
 
     try {
-      // Llamar al método para guardar el día de permiso
-      var response = await controller.solicitarPermiso(fechaInicio, fechaFin, descripcion, validadorId);
-      //print("Fecha de inicio"+ fechaInicio + " FINAL " + fechaFin + " DESCRIPCION " + descripcion + " VALIDADOR " + validadorId);
-      // Comprobar la respuesta (ajusta esto según la estructura de la respuesta de tu API)
+      var response = await controller.solicitarPermiso(fechaInicioStr, fechaFinStr, descripcion, validadorId);
       if (response['success']) {
         setState(() {
           _isSubmitting = false;
         });
         bool diaCreado = true;
 
-        // Mostrar mensaje de éxito
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text('Día de permiso solicitado con éxito')),
         );
 
-        // Cerrar la pantalla después de la solicitud
+        // Cerrar la pantalla al crear el día de permiso
         Navigator.pop(context, diaCreado);
       } else {
         setState(() {
           _isSubmitting = false;
         });
 
-        // Mostrar mensaje de error
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text('Error al solicitar el permiso')),
         );
@@ -216,12 +234,10 @@ void _submitForm() async {
         _isSubmitting = false;
       });
 
-      // Mostrar mensaje de error si algo sale mal
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Error: ${e.toString()}')),
       );
     }
   }
 }
-
 }

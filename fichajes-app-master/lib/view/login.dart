@@ -43,10 +43,10 @@ class _LoginState extends State<Login> {
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        // Logo Image added here
+        // IMAGEN CAMBIAR
         Image.asset(
           'assets/images/deltanet_logo.png',
-          height: 100, // Adjust the height as needed
+          height: 100, 
         ),
         const SizedBox(
           height: 40,

@@ -43,12 +43,12 @@ Future<Event> startSignTask(Event event) async {
     String body = utf8.decode(response.bodyBytes);
     final jsonData = jsonDecode(body);
 
-    print('Response Body: $body'); // Agrega esta línea para inspeccionar la respuesta
+    print('Response Body: $body'); 
 
     switch (response.statusCode) {
       case 200:
         e.id = jsonData['id'];
-        e.eventType = jsonData['event_type']; // Asegúrate de que sea un string
+        e.eventType = jsonData['event_type']; 
         e.note = jsonData['note'];
         e.thirdPartyId = jsonData['fk_third_party'];
         e.taskId = jsonData['fk_task'];
@@ -250,10 +250,9 @@ Future<List<Event>> delete(String tokenR) async {
     'Content-Type': 'application/json',
   };
 
-  String url = '${apiUrl}chronoapi/chrono?token=$tokenR'; // Usamos tokenR como cadena
+  String url = '${apiUrl}chronoapi/chrono?token=$tokenR'; 
 
   try {
-    // Realizar la solicitud DELETE
     final response = await http.delete(
       Uri.parse(url),
       headers: header,
