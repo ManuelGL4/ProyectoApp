@@ -136,6 +136,7 @@ Future<Event> getLastEvent(Event event) async {
     SharedPreferences preferences = await SharedPreferences.getInstance();
   
     String? token=preferences.getString('token');
+    String userId = preferences.getString('userId')?? '';
 
     Map<String,String> header={
       'DOLAPIKEY': token?? '',
@@ -146,7 +147,7 @@ Future<Event> getLastEvent(Event event) async {
     
     try {
 
-      String url = '${apiUrl}tasks/events/last';
+      String url = '${apiUrl}chronoapi/obtenerRegistrosActivos/$userId';
 
       final response=await http.get(Uri.parse(url),headers: header).timeout(const Duration(seconds: 30));
 
